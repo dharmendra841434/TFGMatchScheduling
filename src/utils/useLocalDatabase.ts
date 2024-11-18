@@ -42,6 +42,7 @@ const useLocalDatabase = () => {
       const updatedItems = items
         ?.flat()
         .map(item => (item.id === id ? {...item, ...updatedItem} : item));
+
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
       setItems(updatedItems);
       console.log('Item updated successfully');

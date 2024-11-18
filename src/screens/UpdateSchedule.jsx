@@ -20,6 +20,7 @@ import {timeSlot} from '../utils/timeSlot';
 import {convertTo12HourFormat, storeData} from '../utils/helper';
 import {useSelector, useDispatch} from 'react-redux';
 import {setScheduledMatchList} from '../reduxManagment/splice/appSlice';
+import useLocalDatabase from '../utils/useLocalDatabase';
 
 const UpdateSchedule = props => {
   const schedule_data = props?.route?.params?.schedule;
@@ -38,6 +39,7 @@ const UpdateSchedule = props => {
   );
   const scheduledList = useSelector(state => state.app.scheduledList);
   const dispatch = useDispatch();
+  const {  updateItem ,items,refreshItems} =useLocalDatabase()
 
   //console.log(schedule_data, 'updfat');
 
@@ -85,42 +87,28 @@ const UpdateSchedule = props => {
     ) {
       return alert('All Fields are Required!!');
     }
-    const matchScheduleData = [
-      {
-        id: schedule_data?.id,
-        matchName: match,
-        firstParticipent: participent1,
-        secondParticipent: participent2,
-        matchDay: selectedDay,
-        timeSlot: selectedTimeSlot,
-      },
-    ];
-
-    let filtered = scheduledList.filter(
-      (item, index) => item.id !== schedule_data?.id,
+    const matchScheduleData ={
+      id: schedule_data?.id,
+      matchName: match,
+      firstParticipent: participent1,
+      secondParticipent: participent2,
+      matchDay: selectedDay,
+      timeSlot: selectedTimeSlot,
+    }
+    updateItem(schedule_data?.id,matchScheduleData)
+    ToastAndroid.showWithGravity(
+      ` Match Scheduled on ${selectedDay}`,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
     );
-
-    const data = [...filtered, matchScheduleData];
-    //console.log('current id', schedule_data?.id);
-    //  console.log(data, 'this is d');
-    storeData('scheduledMatch', data.flat())
-      .then(() => {
-        console.log('Data stored successfully');
-        dispatch(setScheduledMatchList(data?.flat()));
-        ToastAndroid.showWithGravity(
-          ` Match Scheduled on ${selectedDay}`,
-          ToastAndroid.LONG,
-          ToastAndroid.CENTER,
-        );
-        setMatch('');
-        setParticipent1('');
-        setParticipent2('');
-        setSelectedDay('');
-        setSelectedTimeSlot([]);
-        navigation.goBack();
-      })
-      .catch(error => console.error('Error storing array:', error));
-  };
+    setMatch('');
+    setParticipent1('');
+    setParticipent2('');
+    setSelectedDay('');
+    setSelectedTimeSlot([]);
+    refreshItems()
+    navigation.goBack();
+   };
 
   return (
     <View style={styles.screen}>

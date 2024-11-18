@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {appColors} from '../utils/appColors';
@@ -23,6 +24,13 @@ const ScheduledMatchs = () => {
   const [docId, setDocId] = useState('');
   const { items, loading, addItem, updateItem, deleteItem, refreshItems } =useLocalDatabase()
   
+
+  useEffect(() => {
+    const refreshData = async()=>{
+     await refreshItems()
+    }
+    refreshData()
+  }, [loading])
   
 const handleDelete=()=>{
   deleteItem(docId).then(()=>{
@@ -32,7 +40,8 @@ const handleDelete=()=>{
  
 }
 
-  
+console.log(items,"cvfhrtht");
+
   return (
     <View style={styles.screen}>
       <CustomModal modalVisible={docId === '' ? false : true}>
@@ -76,7 +85,7 @@ const handleDelete=()=>{
         <Text style={styles.title}>Schedule List</Text>
       </View>
       <View style={{padding: 8, height: '90%'}}>
-        <FlatList
+        {loading?<ActivityIndicator/>:<FlatList
           data={items?.flat()}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => (
@@ -196,7 +205,7 @@ const handleDelete=()=>{
               </View>
             </View>
           )}
-        />
+        />}
       </View>
     </View>
   );

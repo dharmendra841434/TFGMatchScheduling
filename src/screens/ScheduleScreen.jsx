@@ -34,7 +34,8 @@ const ScheduleScreen = () => {
   const scheduledList = useSelector(state => state.app.scheduledList);
   const dispatch = useDispatch();
 
-  const { items, loading, addItem, updateItem, deleteItem, refreshItems } =useLocalDatabase()
+  const {  addItem,refreshItems } =useLocalDatabase()
+
 
 
 
